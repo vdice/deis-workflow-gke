@@ -29,7 +29,13 @@ You will be able:
 - helmc - fetches the latest [Helm Classic](https://github.com/helm/helm-classic) cli
 - cluster - shows cluster GKE name
 
-Also if you rename/copy `postgres_settings.tpl` file to `postgres_settings`, then you can set [PostgreSQL](https://deis.com/docs/workflow/installing-workflow/configuring-postgres/) database to off-cluster.
+TODO:
+=====
+mention:
+  * supported obj storage config (minio, gcs, s3) (set `STORAGE_TYPE=gcs|s3`)
+  * supported postgres (on-cluster, off-cluster) (set `DATABASE_LOCATION=off-cluster`),
+  * supported registry (on-cluster, gcr) (set `REGISTRY_LOCATION=gcr`)
+
 As Google Cloud Platform does not have hosted Postgres, you can use [compose.io](https://www.compose.com/postgresql) one, which supports GCP deployment.
 
 What the [install](https://deis.com/docs/workflow/installing-workflow/) will do:
@@ -38,10 +44,10 @@ What the [install](https://deis.com/docs/workflow/installing-workflow/) will do:
 - Download lastest `helmc` cli version
 - Download lastest `deis` cli version
 - Add Deis Chart repository
-- Fetch latest Workflow chart
+- Fetch latest Workflow chart (can be overridden via `DESIRED_WORKFLOW_RELEASE=<release>`)
 - Set storage to GCS
 - Set Registry to grc.io
-- If `postgres_settings` file found sets PostgeSQL database to off-cluster 
+- If `postgres_settings` file found sets PostgeSQL database to off-cluster
 - Generate chart
 - Install Workflow
 - Show `deis-router` external IP
@@ -50,15 +56,20 @@ What the [upgrade](https://deis.com/docs/workflow/managing-workflow/upgrading-wo
 
 - Download lastest `helmc` cli version
 - Download lastest `deis` cli version
-- Fetch latest Workflow chart
+- Fetch latest Workflow chart (can be overridden via `DESIRED_WORKFLOW_RELEASE=<release>`)
 - Fetch current database credentials
 - Fetch builder component ssh keys
 - Set Storage to GCS
 - Set Registry to grc.io
-- If `postgres_settings` file found sets PostgeSQL database to off-cluster 
-- Generate chart for the new release
-- Uninstall old version Workflow
+- If `postgres_settings` file found sets PostgeSQL database to off-cluster
+- Generate chart for the new release (using pattern `workflow-$DESIRED_WORKFLOW_RELEASE-$K8S_NAME`)
+- Uninstall old version Workflow (using pattern `workflow-$PREVIOUS_WORKFLOW_RELEASE-$K8S_NAME`, see note below for overriding)
 - Install new version Workflow
+
+Note: You may choose to specify the old/installed Workflow chart name to be upgraded instead of relying on the pattern mentioned above:
+```
+export CURRENT_WORKFLOW_CHART=<name of installed chart>
+```
 
 ### have fun with Deis Workflow PaaS of deploying your 12 Factor Apps !!!
 
